@@ -43,7 +43,7 @@ const resolvers = {
                 const result = await pool.query('INSERT INTO orders (status, customer_name, products, created_date) VALUES ($1, $2, $3, $4) RETURNING *', [status, customer_name, products, created_date]);
                 return result.rows[0];
             } catch (error) {
-                console.error('Błąd podczas tworzenia zamówienia:', error);
+                console.error('Error while creating an order:', error);
                 throw error;
             }
         },
@@ -52,7 +52,7 @@ const resolvers = {
                 const result = await pool.query(`DELETE FROM orders WHERE id = ${id}`)
                 return result.rows[0];
             } catch (error) {
-                console.error('Błąd podczas tworzenia zamówienia:', error);
+                console.error('Error while deleting an order', error);
                 throw error;
             }
         },
@@ -61,7 +61,7 @@ const resolvers = {
                 const result = await pool.query(`UPDATE orders SET status = $1, customer_name=$2, products=$3, created_date=$4 WHERE id=${id} RETURNING *`, [status, customer_name, products, created_date]);
                 return result.rows[0];
             } catch (error) {
-                console.error('Błąd podczas tworzenia zamówienia:', error);
+                console.error('Error while updating an order', error);
                 throw error;
             }
         },
