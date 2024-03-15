@@ -3,7 +3,8 @@ const express = require("express");
 const bodyParser = require('body-parser');
 const app = express();
 const db = require('./routes/queries');
-const db_data = require('./db_data');
+
+const { pool } = require('./routes/queries');
 
 app.use(bodyParser.json())
 app.use(
@@ -21,47 +22,52 @@ app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 });
 
+const { ApolloServer } = require('apollo-server');
+const { typeDefs } = require('./schema');
 
-const { ApolloServer, gql } = require('apollo-server');
+const resolvers = {
+    Query: {
+        orders: async () => {
+            try {
+                const result = await pool.query('SELECT * FROM orders');
+                return result.rows;
+            } catch (error) {
+                console.error('Błąd podczas pobierania danych:', error);
+                throw error;
+            }
+        },
+    },
+    Mutation: {
+        createOrder: async (_, { status, customer_name, products, created_date }) => {
+            try {
+                const result = await pool.query('INSERT INTO orders (status, customer_name, products, created_date) VALUES ($1, $2, $3, $4) RETURNING *', [status, customer_name, products, created_date]);
+                return result.rows[0];
+            } catch (error) {
+                console.error('Błąd podczas tworzenia zamówienia:', error);
+                throw error;
+            }
+        },
+        deleteOrder: async (_, { id }) => {
+            try {
+                const result = await pool.query(`DELETE FROM orders WHERE id = ${id}`)
+                return result.rows[0];
+            } catch (error) {
+                console.error('Błąd podczas tworzenia zamówienia:', error);
+                throw error;
+            }
+        },
+        updateOrder: async (_, { status, customer_name, products, created_date, id }) => {
+            try {
+                const result = await pool.query(`UPDATE orders SET status = $1, customer_name=$2, products=$3, created_date=$4 WHERE id=${id} RETURNING *`, [status, customer_name, products, created_date]);
+                return result.rows[0];
+            } catch (error) {
+                console.error('Błąd podczas tworzenia zamówienia:', error);
+                throw error;
+            }
+        },
+    },
+};
 
-const typeDefs = gql`
-    type Car {
-        id: ID
-        model: String!
-        fuel_type: String!
-        num_of_sold: Int
-    }
-    type Query {
-        cars: [Car]
-    }
-`;
-
-// const resolvers = {
-//     Query: {
-//         cars: async () => {
-//             try {
-//                 const result = await app.get('/cars', db.getCars);
-//                 return result.rows;
-//             } catch (error) {
-//                 console.error('Błąd podczas pobierania danych:', error);
-//                 throw error;
-//             }
-//         },
-//     },
-// }; <---- Niedziała
-
-// const resolvers = {
-//     Query: {
-//         cars: async () => {
-//             try {
-//                 return db_data.cars
-//             } catch (error) {
-//                 console.error('Błąd podczas pobierania danych:', error);
-//                 throw error;
-//             }
-//         },
-//     },
-// }; < ---- Działa
 
 const {
     ApolloServerPluginLandingPageLocalDefault
