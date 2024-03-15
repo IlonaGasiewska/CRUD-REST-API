@@ -61,4 +61,4 @@ const deleteCars = (request, response) => {
     })
 }
 
-module.exports = { getCars, getCarById, createCar, updateCar, deleteCars };
+module.exports = { getCars, getCarById, createCar, updateCar, deleteCars, pool };
