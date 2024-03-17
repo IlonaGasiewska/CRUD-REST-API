@@ -2,9 +2,12 @@ const port = process.env.PORT || require('./configs/config').port
 const express = require("express");
 const bodyParser = require('body-parser');
 const app = express();
-const db = require('./routes/queries');
+const db = require('./queries');
 
-const { pool } = require('./routes/queries');
+const { ApolloServer } = require('apollo-server');
+const { typeDefs } = require('./schema');
+
+const { pool } = require('./queries');
 
 app.use(bodyParser.json())
 app.use(
@@ -21,9 +24,6 @@ app.delete('/car/:id', db.deleteCars);
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 });
-
-const { ApolloServer } = require('apollo-server');
-const { typeDefs } = require('./schema');
 
 const resolvers = {
     Query: {

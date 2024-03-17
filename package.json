@@ -17,7 +17,7 @@
   },
   "scripts": {
     "start": "node app.js",
-    "serve": "node index.js"
+    "serve": "node app.js"
   },
   "repository": {
     "type": "git",

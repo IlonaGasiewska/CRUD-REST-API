@@ -8,8 +8,7 @@ const getCars = (request, response) => {
         if (error) {
             throw error;
         }
-        // response.status(200).json(results.rows);
-        return results.rows
+        response.status(200).json(results.rows);
     });
 }
 
@@ -31,7 +30,7 @@ const createCar = (request, response) => {
         if (error) {
             throw error;
         }
-        response.status(200).send(`User added with ID: ${results.insertId}`);
+        response.status(200).send(`Car added with ID: ${results.insertId}`);
     });
 }
 
@@ -45,7 +44,7 @@ const updateCar = (request, response) => {
             if (error) {
                 throw error.message;
             }
-            response.status(200).send(`User modified with ID: ${id}`);
+            response.status(200).send(`Car modified with ID: ${id}`);
         }
     );
 }
@@ -57,7 +56,7 @@ const deleteCars = (request, response) => {
         if (error) {
             throw error
         }
-        response.status(200).send(`User deleted with ID: ${id}`)
+        response.send(`Car deleted with ID: ${id}`)
     })
 }
 
